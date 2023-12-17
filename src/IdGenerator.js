@@ -11,7 +11,7 @@
  * @property {Crypto=} Crypto
  * @property {BufferConstructor=} Buffer
  * @property {Dictionary=} dictionary
- * @property {number=} randomPoolSize
+ * @property {number=} randomPoolSize - max 65536
  */
 export default class IdGenerator {
   /** @type {Crypto=} */
@@ -36,6 +36,9 @@ export default class IdGenerator {
 
   /** @type {Buffer=} */
   #buffer;
+
+  /** @type {string[]} */
+  #chars;
 
   /** @param {IdGeneratorParams} params */
   constructor({
@@ -65,6 +68,8 @@ export default class IdGenerator {
     this.#randomPoolOffset = 0;
     this.#randomPoolSize = randomPoolSize;
     this.#randomPool = this.#createRandomPool(randomPoolSize);
+
+    this.#chars = [];
   }
 
   #getCryptoClass() {
@@ -87,7 +92,8 @@ export default class IdGenerator {
    * @param {number} size
    */
   #createRandomPool(size) {
-    const randomPool = Array.from({ length: size }, () => 0);
+    /** @type {number[]} */
+    const randomPool = [];
 
     const Buffer = this.#getBufferClass();
     if (Buffer != null) {
@@ -188,16 +194,16 @@ export default class IdGenerator {
 
     const dictionary = this.#getDictionary();
 
-    let id = '';
+    const chars = this.#chars;
 
     for (let i = size; i--;) {
       const position = this.#getRandomInt();
 
       const char = dictionary[position];
 
-      id += char;
+      chars[i] = char;
     }
 
-    return id;
+    return chars.join('');
   }
 }
