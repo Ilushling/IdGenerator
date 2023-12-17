@@ -1,0 +1,26 @@
+{
+  "name": "mainid",
+  "version": "1.0.0",
+  "description": "Id generator",
+  "type": "module",
+  "author": "Ilushling",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "id",
+    "generator"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ilushling/IdGenerator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ilushling/IdGenerator/issues"
+  },
+  "homepage": "https://github.com/Ilushling/IdGenerator#readme",
+  "devDependencies": {
+    "@types/node": "^20.10.4"
+  }
+}
