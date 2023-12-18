@@ -1,7 +1,7 @@
 {
   "name": "mainid",
   "version": "1.0.2",
-  "description": "Id generator",
+  "description": "Id generator with crypto",
   "type": "module",
   "author": "Ilushling",
   "license": "MIT",
@@ -10,7 +10,8 @@
   },
   "keywords": [
     "id",
-    "generator"
+    "generator",
+    "crypto"
   ],
   "repository": {
     "type": "git",
