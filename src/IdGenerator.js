@@ -63,10 +63,29 @@ export default class IdGenerator {
     }
 
     this.#dictionary = dictionary;
+    if (typeof dictionary !== 'string') {
+      throw Object.assign(new Error('dictionary must be string'), {
+        name: 'InvalidDictionaryTypeError'
+      });
+    }
+
     this.#dictionarySize = dictionary.length;
+
+    if (this.#dictionarySize < 1) {
+      throw Object.assign(new Error('dictionary must be non-empty string'), {
+        name: 'InvalidDictionaryLengthError'
+      });
+    }
 
     this.#randomPoolOffset = 0;
     this.#randomPoolSize = randomPoolSize;
+
+    if (randomPoolSize < 1) {
+      throw Object.assign(new Error('randomPoolSize must be greater than 0'), {
+        name: 'InvalidRandomPoolSizeError'
+      });
+    }
+
     this.#randomPool = this.#createRandomPool(randomPoolSize);
 
     this.#chars = [];
@@ -150,7 +169,9 @@ export default class IdGenerator {
         const bufferMask = dictionarySize - 1;
 
         for (let i = randomPoolSize; i--;) {
-          randomPool[i] = buffer[i] & bufferMask;
+          const position = buffer[i] & bufferMask;
+
+          randomPool[i] = position;
         }
 
         this.#resetRandomPoolOffset();
@@ -202,6 +223,10 @@ export default class IdGenerator {
       const char = dictionary[position];
 
       chars[i] = char;
+    }
+
+    if (chars.length > size) {
+      chars.length = size;
     }
 
     return chars.join('');
