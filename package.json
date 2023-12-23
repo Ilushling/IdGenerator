@@ -5,6 +5,7 @@
   "type": "module",
   "author": "Ilushling",
   "license": "MIT",
+  "main": "./src/IdGenerator.js",
   "scripts": {
     "test": "node --test"
   },
