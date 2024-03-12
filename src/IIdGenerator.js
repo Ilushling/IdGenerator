@@ -17,7 +17,7 @@
 
 /**
  * @typedef {object} IdGeneratorDependencies
- * @property {Crypto=} Crypto
+ * @property {Crypto=} crypto
  * 
  * @typedef {object} IdGeneratorConfigParams
  * @property {Dictionary} dictionary - Array of chars is faster than string

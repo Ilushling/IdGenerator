@@ -1,8 +1,15 @@
 # IdGenerator
 IdGenerator
 
-- [Features](#features).
-- [Usage](#usage).
+1) [Features](#features);
+2) [Usage](#usage):
+  1) [Prepare](#prepare):
+    1) [Create id generator](#create-id-generator):
+      1) [Unsafe](#unsafe);
+      2) [Safe](#safe);
+      3) [Dictionary and random pool size](#dictionary-and-random-pool-size).
+  2) [Commands](#commands):
+    1) [Create](#create).
 
 ## Features
 1) Unlimited id size;
@@ -12,18 +19,16 @@ IdGenerator
 5) Fallback to Math.random (if Crypto & Buffer not used).
 
 ## Usage
-1) [Prepare](#prepare);
-2) [Commands](#commands);
 
 ### Prepare
-1) [Create id generator](#create-id-generator);
+```js
+import { IdGenerator } 'mainid';
+```
 
 #### Create id generator
 ##### Unsafe
 Math.random for random
 ```js
-import { IdGenerator } 'mainid';
-
 const idGenerator = new IdGenerator();
 ```
 
@@ -33,7 +38,7 @@ const idGenerator = new IdGenerator();
 
 ```js
 const idGenerator = new IdGenerator({
-  Crypto: /** @type {Crypto} */ (crypto)
+  crypto: /** @type {Crypto} */ (crypto)
 });
 ```
 

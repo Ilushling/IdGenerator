@@ -11,20 +11,18 @@ import crypto from 'node:crypto';
 
 /** @param {IdGeneratorParams} params */
 function createIdGenerator({
-  Crypto,
+  crypto,
 
   dictionary,
   randomPoolSize
 } = {}) {
   return new IdGenerator({
-    Crypto,
+    crypto,
 
     dictionary,
     randomPoolSize
   });
 }
-
-const Crypto = /** @type {Crypto} */ (crypto);
 
 describe('IdGenerator', () => {
   describe('unsafe', () => {
@@ -48,7 +46,7 @@ describe('IdGenerator', () => {
   describe('safe', () => {
     it('create', () => {
       const idGenerator = createIdGenerator({
-        Crypto
+        crypto: /** @type {Crypto} */ (crypto)
       });
 
       const id = idGenerator.create();
@@ -58,7 +56,7 @@ describe('IdGenerator', () => {
 
     it('createArray', () => {
       const idGenerator = createIdGenerator({
-        Crypto
+        crypto: /** @type {Crypto} */ (crypto)
       });
 
       const idArray = idGenerator.createArray();
