@@ -22,6 +22,8 @@ IdGenerator
 ##### Unsafe
 Math.random for random
 ```js
+import { IdGenerator } 'mainid';
+
 const idGenerator = new IdGenerator();
 ```
 
@@ -31,8 +33,7 @@ const idGenerator = new IdGenerator();
 
 ```js
 const idGenerator = new IdGenerator({
-  Crypto: /** @type {Crypto} */ (crypto),
-  Buffer
+  Crypto: /** @type {Crypto} */ (crypto)
 });
 ```
 

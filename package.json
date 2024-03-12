@@ -5,7 +5,7 @@
   "type": "module",
   "author": "Ilushling",
   "license": "MIT",
-  "main": "./src/IdGenerator.js",
+  "main": "./index.js",
   "scripts": {
     "test": "node --test"
   },
@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/Ilushling/IdGenerator#readme",
   "devDependencies": {
-    "@types/node": "^20.10.5"
+    "@types/node": "^20.11.26"
   }
 }

@@ -1,75 +1,60 @@
 /**
- * @typedef {string|string[]|number[]} Dictionary
+ * @typedef {import('./IIdGenerator.js').RandomPool} RandomPool
  */
 
 /**
- * @typedef {number[]} RandomPool
+ * @typedef {import('./IIdGenerator.js').IdGeneratorProperties} IdGeneratorProperties
+ * @typedef {import('./IIdGenerator.js').IdGeneratorParams} IdGeneratorParams
  */
 
 /**
- * @typedef {object} IdGeneratorParams
- * @property {Crypto=} Crypto
- * @property {BufferConstructor=} Buffer
- * @property {Dictionary=} dictionary - Array of chars is faster than string
- * - String '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'
- * - Array of string ['-','0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','_','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
- * - Array of char codes [45, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 95, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 45, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 95, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122]
- * @property {number=} randomPoolSize - max 65536
+ * @typedef {import('./IIdGenerator.js').IIdGenerator} IIdGenerator
+ * @implements {IIdGenerator}
  */
 export default class IdGenerator {
-  /** @type {Crypto=} */
-  #CryptoClass;
-  /** @type {BufferConstructor=} */
-  #BufferClass;
+  // Dependencies
+  /** @type {IdGeneratorProperties['Crypto']} */
+  #Crypto;
 
-  /** @type {Dictionary} */
+  // Configs
+  /** @type {IdGeneratorProperties['dictionary']} */
   #dictionary;
 
-  /** @type {number} */
-  #dictionarySize;
-
-  /** @type {number} */
-  #randomPoolOffset;
-
-  /** @type {number} */
+  /** @type {IdGeneratorProperties['randomPoolSize']} */
   #randomPoolSize;
 
-  /** @type {RandomPool} */
+  // States
+  /** @type {IdGeneratorProperties['dictionarySize']} */
+  #dictionarySize;
+
+  /** @type {IdGeneratorProperties['randomPoolOffset']} */
+  #randomPoolOffset;
+
+  /** @type {IdGeneratorProperties['randomPool']} */
   #randomPool;
 
-  /** @type {Buffer=} */
+  /** @type {IdGeneratorProperties['buffer']} */
   #buffer;
 
-  /** @type {number[]} */
+  /** @type {IdGeneratorProperties['randomInts']} */
   #randomInts;
 
-  /** @type {string[]|number[]} */
+  /** @type {IdGeneratorProperties['chars']} */
   #chars;
 
   /** @param {IdGeneratorParams} params */
   constructor({
     Crypto,
-    Buffer,
+
     // dictionary = '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz',
-    dictionary = ['-','0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','_','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','-','0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','_','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','-','0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','_','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','-','0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','_','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'],
+    dictionary = ['-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
     // dictionary = [45, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 95, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 45, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 95, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 45, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 95, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 45, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 95, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122],
     randomPoolSize = 128
   } = {}) {
-    this.#CryptoClass = Crypto;
-    this.#BufferClass = Buffer;
+    // Dependencies
+    this.#Crypto = Crypto;
 
-    if (Crypto == null && Buffer != null) {
-      throw Object.assign(new Error('Crypto must be non-empty when Buffer non-empty'), {
-        name: 'CryptoEmptyError'
-      });
-    }
-
-    if (Crypto != null && Buffer == null) {
-      throw Object.assign(new Error('Buffer must be non-empty when Crypto non-empty'), {
-        name: 'BufferEmptyError'
-      });
-    }
-
+    // Configs
     this.#dictionary = dictionary;
     if (typeof dictionary !== 'string' && !Array.isArray(dictionary)) {
       throw Object.assign(new Error('dictionary must be string or array of chars'), {
@@ -85,6 +70,7 @@ export default class IdGenerator {
       });
     }
 
+    // States
     this.#randomPoolOffset = 0;
     this.#randomPoolSize = randomPoolSize;
 
@@ -106,11 +92,7 @@ export default class IdGenerator {
   }
 
   #getCryptoClass() {
-    return this.#CryptoClass;
-  }
-
-  #getBufferClass() {
-    return this.#BufferClass;
+    return this.#Crypto;
   }
 
   #getDictionary() {
@@ -129,7 +111,6 @@ export default class IdGenerator {
     const randomPool = [];
     randomPool.length = size;
 
-    const Buffer = this.#getBufferClass();
     if (Buffer != null) {
       this.#buffer = Buffer.alloc(size);
     }
@@ -217,13 +198,13 @@ export default class IdGenerator {
             }
 
             for (let i = length; i < randomPoolSize; i++) {
-            const position = buffer[i];
+              const position = buffer[i];
 
-            randomPool[i] = position;
+              randomPool[i] = position;
             }
           }
         } else {
-        const bufferMask = dictionarySize - 1;
+          const bufferMask = dictionarySize - 1;
 
           if (sizeRemaining === 0) {
             for (let i = 0; i < randomPoolSize; i += threads) {
@@ -311,7 +292,7 @@ export default class IdGenerator {
    * @param {number} count
    */
   #getRandomInts(count) {
-    const randomInts = this.#randomInts ??= [];
+    const randomInts = this.#randomInts;
     if (randomInts.length !== count) {
       randomInts.length = count;
     }
@@ -378,6 +359,7 @@ export default class IdGenerator {
   }
 
   /**
+   * Create random array of dictionary chars
    * @param {number=} size
    */
   createArray(size = 22) {
@@ -399,10 +381,10 @@ export default class IdGenerator {
       for (let i = 0; i < size; i++) {
         const position = randomInts[i];
 
-      const char = dictionary[position];
+        const char = dictionary[position];
 
-      chars[i] = char;
-    }
+        chars[i] = char;
+      }
     } else {
       const threads = 4;
       const sizeRemaining = size % threads;
@@ -466,6 +448,7 @@ export default class IdGenerator {
   }
 
   /**
+   * Create random string of dictionary chars
    * @param {number=} size
    */
   create(size = 22) {
