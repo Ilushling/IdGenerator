@@ -3,13 +3,13 @@ IdGenerator
 
 1) [Features](#features);
 2) [Usage](#usage):
-  1) [Prepare](#prepare):
-    1) [Create id generator](#create-id-generator):
-      1) [Unsafe](#unsafe);
-      2) [Safe](#safe);
-      3) [Dictionary and random pool size](#dictionary-and-random-pool-size).
-  2) [Commands](#commands):
-    1) [Create](#create).
+    1) [Prepare](#prepare):
+        1) [Create id generator](#create-id-generator):
+            1) [Unsafe](#unsafe);
+            2) [Safe](#safe);
+            3) [Dictionary and random pool size](#dictionary-and-random-pool-size).
+    2) [Commands](#commands):
+        1) [Create](#create).
 
 ## Features
 1) Unlimited id size;
