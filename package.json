@@ -1,6 +1,6 @@
 {
   "name": "mainid",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Id generator with crypto",
   "type": "module",
   "author": "Ilushling",
