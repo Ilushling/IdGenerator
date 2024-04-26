@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/Ilushling/IdGenerator#readme",
   "devDependencies": {
-    "@types/node": "^20.11.26"
+    "@types/node": "^20.12.7"
   }
 }

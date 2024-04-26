@@ -1,17 +1,21 @@
-/**
- * @typedef {import('./IIdGenerator.js').RandomPool} RandomPool
- */
 
 /**
- * @typedef {import('./IIdGenerator.js').IdGeneratorProperties} IdGeneratorProperties
- * @typedef {import('./IIdGenerator.js').IdGeneratorParams} IdGeneratorParams
- */
-
-/**
- * @typedef {import('./IIdGenerator.js').IIdGenerator} IIdGenerator
  * @implements {IIdGenerator}
  */
 export default class IdGenerator {
+  /**
+   * @typedef {import('./IIdGenerator.js').IIdGenerator} IIdGenerator
+   */
+
+  /**
+   * @typedef {import('./IIdGenerator.js').RandomPool} RandomPool
+   */
+
+  /**
+   * @typedef {import('./IIdGenerator.js').IdGeneratorProperties} IdGeneratorProperties
+   * @typedef {import('./IIdGenerator.js').IdGeneratorParams} IdGeneratorParams
+   */
+
   // Dependencies
   /** @type {IdGeneratorProperties['crypto']} */
   #crypto;
