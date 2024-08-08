@@ -1,10 +1,17 @@
 import IdGenerator from './src/IdGenerator.js';
 
+/**
+ * @import {
+ *  IIdGenerator,
+ *  Dictionary
+ * } from './src/IIdGenerator.js'
+ */
+
 export {
   IdGenerator
 };
 
 /**
- * @typedef {import('./src/IIdGenerator.js').IIdGenerator} IIdGenerator
- * @typedef {import('./src/IIdGenerator.js').Dictionary} Dictionary
+ * @typedef {IIdGenerator} IIdGenerator
+ * @typedef {Dictionary} Dictionary
  */

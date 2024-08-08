@@ -6,21 +6,14 @@ import IdGenerator from '../src/IdGenerator.js';
 import crypto from 'node:crypto';
 
 /**
- * @typedef {import('../src/IIdGenerator.js').IdGeneratorParams} IdGeneratorParams
+ * @param {object} [params]
+ * @param {Crypto=} params.crypto
  */
-
-/** @param {IdGeneratorParams} params */
 function createIdGenerator({
-  crypto,
-
-  dictionary,
-  randomPoolSize
+  crypto
 } = {}) {
   return new IdGenerator({
-    crypto,
-
-    dictionary,
-    randomPoolSize
+    crypto
   });
 }
 
